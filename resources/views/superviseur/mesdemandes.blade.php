@@ -1,4 +1,4 @@
-@extends('layouts.appemp')
+@extends('layouts.appsuperv')
 
 @section('content')
 <div class="container">
@@ -230,7 +230,7 @@
         $('#Valide').addClass('table-success');
         $('#Correction').addClass('table-warning');
         $('#Refus').addClass('table-danger');
-        $('a').css('color', 'black');
+        $('td a').css('color', 'black');
 
         $('[data-toggle="tooltip"]').tooltip();
         

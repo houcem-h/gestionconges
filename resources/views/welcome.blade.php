@@ -46,7 +46,7 @@
             }
 
             .title {
-                font-size: 84px;
+                font-size: 39px;
             }
 
             .links > a {
@@ -78,10 +78,12 @@
             @endif
 
             <div class="content">
+                <img src="https://vignette.wikia.nocookie.net/logopedia/images/2/25/Hyundai_logo_with_slogan.png/revision/latest/scale-to-width-down/640?cb=20171113175048" alt="HYUNDAI new thinking.new possibilities">
+                <br><br>
                 <div class="title m-b-md">
                     Hynudai Tunisie
                     <br>
-                    <small>Demandes de congés & sorties</small>
+                    <small>Demandes de congés & autorisations de sortie</small>
                 </div>
 
                 <div class="links">

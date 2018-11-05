@@ -28,9 +28,7 @@ Route::get('/resprh/home', function(){
     return view('resprh.home');
 });
 
-Route::get('/superviseur/home', function(){
-    return view('superviseur.home');
-});
+Route::get('/superviseur/home', 'EquipeCongeController@index')->name('superviseur.home')->middleware('auth');
 
 Route::get('/employee/home', 'EmployeeCongeController@index')->middleware('auth');
 
@@ -42,3 +40,14 @@ Route::get('/employee/home', 'EmployeeCongeController@index')->middleware('auth'
 Route::resource('employeeConge', 'EmployeeCongeController');
 
 Route::put('employeeCongeCancel', 'EmployeeCongeController@cancel')->name('employeeConge.cancel');
+
+
+/*
+ **
+ Routes for the supervisor section
+ **
+*/
+// Route::resource('equipeConge', 'EquipeCongeController');
+Route::get('equipeConge', 'EquipeCongeController@listerConges')->name('equipeConge.liste');
+Route::get('equipeSortie', 'EquipeCongeController@listerSorties')->name('equipeSortie.liste');
+Route::get('mesdemandes', 'EquipeCongeController@mesDemandes')->name('superviseur.mesdemandes');
