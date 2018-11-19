@@ -19,7 +19,10 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">    
 
     <!-- Styles -->
-    {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
 
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -42,10 +45,10 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('employeeConge.index')}}">Accueil</a>
+                            <a class="nav-link" href="{{ route('employee.home')}}">Accueil</a>
                             </li>
                             <li class="nav-item">
-                            <a class="nav-link" href="#">Historique</a>
+                            <a class="nav-link" href="{{ route('employeeConge.historique')}}">Historique</a>
                         </li>
                     </ul>
 

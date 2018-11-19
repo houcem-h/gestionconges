@@ -9,8 +9,9 @@ class HistoriqueConge extends Model
     protected $table = 'historiqueconge';
 
     // relation avec la table User
-    public function conge()
+    public function user()
     {
-        return $this->belongsTo('App\Conge');
+        return $this->belongsTo('App\User');
     }
+    
 }

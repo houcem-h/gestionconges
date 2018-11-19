@@ -39,4 +39,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Conge');
     }
+
+     // relation avec la table Historique Conge
+     public function historiqueConge()
+     {
+         return $this->hasMany('App\Conge');
+     }
 }

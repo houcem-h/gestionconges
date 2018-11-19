@@ -15,7 +15,7 @@
                             Mes demandes en cours
                         </div>
                         <div class="col-4 text-right">
-                            Mon solde congé : <span class="badge badge-primary">{{ Auth::user()->soldeConge }}</span> jours
+                            Mon solde congé : <span class="badge badge-primary animated shake">{{ Auth::user()->soldeConge }}</span> jours
                         </div>
                     </div>                                       
                 </div>

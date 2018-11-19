@@ -14,6 +14,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(EquipeTableSeeder::class);
         // $this->call(UsersTableSeeder::class);                      
         // $this->call(CongeTableSeeder::class);
-        $this->call(HistoriqueCongeTableSeeder::class);
+        // $this->call(HistoriqueCongeTableSeeder::class);
     }
 }

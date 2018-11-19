@@ -15,7 +15,6 @@ class CreateHistoriquecongeTable extends Migration
     {
         Schema::create('historiqueConge', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('employee');
             $table->string('type');
             $table->date('date_debut');
             $table->date('date_fin');
@@ -24,10 +23,13 @@ class CreateHistoriquecongeTable extends Migration
             $table->string('motif');
             $table->date('date_reprise');
             $table->time('heure_reprise');
-            $table->unsignedInteger('valide_par');
+            $table->string('etat');
+            $table->string('remarque')->nullable();
             $table->timestamps();
-            $table->foreign('employee')->references('created_by')->on('conge');
-            $table->foreign('valide_par')->references('updated_by')->on('conge');
+            $table->unsignedInteger('created_by');
+            $table->unsignedInteger('updated_by');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('updated_by')->references('id')->on('users');
         });
     }
 

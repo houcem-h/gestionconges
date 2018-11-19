@@ -12,10 +12,5 @@ class Conge extends Model
     public function user()
     {
         return $this->belongsTo('App\User');
-    }
-
-    public function historiqueConge()
-    {
-        return $this->hasOne('App\HistoriqueConge');
-    }
+    }    
 }
