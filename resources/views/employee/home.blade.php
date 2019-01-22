@@ -216,7 +216,7 @@
 
             <!-- ************************** Modal pour modifier une demande ************************** -->
             <div class="modal fade" id="showEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                         <h5 class="modal-title" id="exampleEditModalLabel">Editer la demande</h5>
@@ -277,8 +277,8 @@
                         <button type="button" class="btn btn-primary" onclick="updateDemandeConge()">Enregistrer</button>
                         </div>
                     </div>
-                    </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>
@@ -340,7 +340,6 @@
                 $('#divheurereprise').hide();
             }
         });
-        //****Fin de personnaliser le formulaire d'ajout selon le type de la demande
 
         //****Personnaliser le formulaire d'edition selon le type de la demande
         $('select#newtype').change(function() {
@@ -383,8 +382,7 @@
 
                 $('#divheurereprise').hide();
             }
-        });
-        //****Fin de personnaliser le formulaire d'edition selon le type de la demande
+        });        
 
     });
 
