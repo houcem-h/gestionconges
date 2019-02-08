@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Events\MoveCongeToHistory;
 use App\Conge;
+use App\Equipe;
 use App\User;
+
 use App\HistoriqueConge;
 
 class EquipeCongeController extends Controller
@@ -85,9 +87,53 @@ class EquipeCongeController extends Controller
             ->paginate(10);
         return view('superviseur.validationconges')->with(['conge' => $conges]);
     }
+  /**
+     * Lister les demandes de congés.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listerCongesEquipe($id)
+    {
+        //Transférer les demandes congés échues vers l'historique
+        $demande = Conge::where('conge.type', '=', 'Conge')
+            ->whereIn('created_by', User::select('id')->where([
+                ['equipe', '=',$id]
+            ])->get())
+            ->whereIn('etat', ['Refus', 'Valide'])
+            ->get();
+        foreach ($demande as $value) {
+            if ($value->date_reprise <= date("Y-m-d")) {
+                $histo = new HistoriqueConge;
+                $histo->type = $value->type;
+                $histo->date_debut = $value->date_debut;
+                $histo->date_fin = $value->date_fin;
+                $histo->heure_sortie = $value->heure_sortie;
+                $histo->duree = $value->duree;
+                $histo->motif = $value->motif;
+                $histo->date_reprise = $value->date_reprise;
+                $histo->heure_reprise = $value->heure_reprise;
+                $histo->etat = $value->etat;
+                $histo->remarque = $value->remarque;
+                $histo->created_by = $value->created_by;
+                $histo->updated_by = $value->updated_by;
+                $histo->save();
+                Conge::find($value->id)->delete();
+            }
+        }
+
+        //lister le restant des demandes congés
+        $conges = Conge::join('users', 'users.id', '=', 'conge.created_by')
+            ->select('users.name', 'users.soldeConge', 'conge.*')
+            ->where([['conge.type', '=', 'Conge'], ['conge.etat', '<>', 'Annulee']])
+            ->whereIn('conge.created_by', User::select('id')->where([
+                ['equipe', '=', $id]
+                            ])->get())
+            ->paginate(10);
+        return view('resprh.validationconges')->with(['conge' => $conges]);
+    }
 
     /**
-     * Lister les demandes de sortie.
+     * Lister les demandes de sortie .
      *
      * @return \Illuminate\Http\Response
      */
@@ -132,7 +178,50 @@ class EquipeCongeController extends Controller
             ->paginate(10);
         return view('superviseur.validationsorties')->with(['sortie' => $sorties]);
     }
+  /**
+     * Lister les demandes de sortie par equipe.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listerSortiesEquipe($id)
+    {
+        //Transférer les demandes de sortie échues vers l'historique
+        $demande = Conge::where('conge.type', '=', 'Sortie')
+            ->whereIn('created_by', User::select('id')->where([
+                ['equipe', '=', $id]
+            ])->get())
+            ->whereIn('etat', ['Refus', 'Valide'])
+            ->get();
+        foreach ($demande as $value) {
+            if ($value->date_debut <= date("Y-m-d", strtotime("-3 days"))) {
+                $histo = new HistoriqueConge;
+                $histo->type = $value->type;
+                $histo->date_debut = $value->date_debut;
+                $histo->date_fin = $value->date_fin;
+                $histo->heure_sortie = $value->heure_sortie;
+                $histo->duree = $value->duree;
+                $histo->motif = $value->motif;
+                $histo->date_reprise = $value->date_reprise;
+                $histo->heure_reprise = $value->heure_reprise;
+                $histo->etat = $value->etat;
+                $histo->remarque = $value->remarque;
+                $histo->created_by = $value->created_by;
+                $histo->updated_by = $value->updated_by;
+                $histo->save();
+                Conge::find($value->id)->delete();
+            }
+        }
 
+        //lister le restant des demandes sorties
+        $sorties = Conge::join('users', 'users.id', '=', 'conge.created_by')
+            ->select('users.name', 'conge.*')
+            ->where([['conge.type', '=', 'Sortie'], ['conge.etat', '<>', 'Annulee']])
+            ->whereIn('conge.created_by', User::select('id')->where([
+                ['equipe', '=', $id]
+            ])->get())
+            ->paginate(10);
+        return view('resprh.validationsorties')->with(['sortie' => $sorties]);
+    }
     /**
      * Chercher le nombre de nouveaux congés.
      *
@@ -148,6 +237,22 @@ class EquipeCongeController extends Controller
                 ['equipe', '=', \Auth::user()->equipe],
                 ['role', '=', 0]
             ])->get())
+            ->count();
+        return $nbconge;
+    }
+   /* Chercher le nombre de nouveaux congés par equipes.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getNbNewCongesEquipe()
+    {
+        $nbconge = Conge::where([
+            ['etat', '=', 'En attente'],
+            ['type', '=', 'Conge']
+        ])
+            ->whereIn('created_by', User::select('id')->where([
+                ['equipe', '=', $this->id]
+                            ])->get())
             ->count();
         return $nbconge;
     }
@@ -256,6 +361,23 @@ class EquipeCongeController extends Controller
             ])->get())
             ->paginate(10);
         return view('superviseur.historiqueconges')->with(['conge' => $conges]);
+    }
+  /**
+     * Lister l'historique des demandes de congés par equipe.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listerHistoriqueCongesEquipe($id)
+    {
+        //lister les demandes congés en historique
+        $conges = HistoriqueConge::join('users', 'users.id', '=', 'historiqueconge.created_by')
+            ->select('users.name', 'users.soldeConge', 'historiqueconge.*')
+            ->where('historiqueconge.type', '=', 'Conge')
+            ->whereIn('historiqueconge.created_by', User::select('id')->where([
+                ['equipe', '=', $id],
+            ])->get())
+            ->paginate(10);
+        return view('resprh.historiqueconges')->with(['conge' => $conges]);
     }
 
     /**
