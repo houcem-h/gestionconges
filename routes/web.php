@@ -28,6 +28,7 @@ Route::get('/resprh/home', function () {
     return view('resprh.home');
 });
 
+
 Route::get('/superviseur/home', 'EquipeCongeController@index')->name('superviseur.home')->middleware('auth');
 
 Route::get('/employee/home', 'EmployeeCongeController@index')->name('employee.home')->middleware('auth');
@@ -87,3 +88,22 @@ Route::get('historiquesortie', 'EquipeCongeController@listerHistoriqueSorties')-
  */
 //Afficher la liste des employés appartenant à l'équipe du superviseur
 Route::get('monequipe', 'EquipeCongeController@listerEquipe')->name('superviseur.monequipe');
+
+
+Route::get('/resprh/gestionemp', 'EmployeeController@index')->name('resph.gestionemp')->middleware('auth');
+Route::resource('employee', 'EmployeeController');
+
+Route::get('/resprh/gestionequi', 'EquipeController@index')->name('resph.gestionequi')->middleware('auth');
+Route::resource('equipe', 'EquipeController');
+
+
+Route::get('superviseurConge', 'SuperviseurCongesController@listerConges')->name('superviseurConge.liste');
+Route::get('superviseurSortie', 'SuperviseurCongesController@listerSorties')->name('superviseurSortie.liste');
+
+Route::get('/resprh/demandeConges', 'EquipeController@liste_equipesConges')->name('demandeConges.equipe');
+Route::get('equipeCongeliste/{id}', 'EquipeCongeController@listerCongesEquipe')->name('equipeCongeliste.listeEquipe');
+
+Route::get('/resprh/demandeSorties', 'EquipeController@liste_equipesSorties')->name('demandeSorties.equipe');
+Route::get('equipeSortieliste/{id}', 'EquipeCongeController@listerSortiesEquipe')->name('equipeSortieliste.listeEquipe');
+
+Route::get('/resprh/historiqueConges', 'EquipeController@liste_equipesSorties')->name('historiqueConges.equipe');
