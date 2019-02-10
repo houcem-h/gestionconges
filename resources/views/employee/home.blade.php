@@ -8,7 +8,7 @@
                 <button class="btn btn-info" data-toggle="modal" data-target="#addnewleaveModal"><i class="fas fa-calendar-plus">&nbsp;Ajouter une demande</i></button>
             </a>
             <br><br>
-            <div class="card">                
+            <div class="card">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-8">
@@ -17,7 +17,7 @@
                         <div class="col-4 text-right">
                             Mon solde congé : <span class="badge badge-primary animated shake">{{ Auth::user()->soldeConge }}</span> jours
                         </div>
-                    </div>                                       
+                    </div>
                 </div>
                 <div class="card-body">
                     @if (session('status'))
@@ -30,16 +30,16 @@
                         <h3>Liste des demandes de congé</h3>
                         <table class="table table-hover table-responsive-md">
                             <thead>
-                                <tr>                                  
-                                  <th>Date début</th>
-                                  <th>Date fin</th>
-                                  <th>Durée</th>
-                                  <th>Motif</th>
-                                  <th>Etat</th>
-                                  <th>Options</th>
+                                <tr>
+                                    <th>Date début</th>
+                                    <th>Date fin</th>
+                                    <th>Durée</th>
+                                    <th>Motif</th>
+                                    <th>Etat</th>
+                                    <th>Options</th>
                                 </tr>
                             </thead>
-                            <tbody>                                
+                            <tbody>
                                 @foreach ($conge as $item)
                                     <tr class="{{ $item->etat }}">
                                         <td>{{ $item->date_debut }}</td>
@@ -88,7 +88,7 @@
                                 <th>Options</th>
                                 </tr>
                             </thead>
-                            <tbody>                                
+                            <tbody>
                                 @foreach ($sortie as $item)
                                     <tr class="{{ $item->etat }}">
                                         <td>{{ $item->date_debut }}</td>
@@ -124,7 +124,7 @@
                     @endif
                 </div>
             </div>
-            
+
             <!-- ************************** Modal pour afficher les détais d'un congé ************************** -->
             <div class="modal fade" id="showDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -147,7 +147,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" onclick="afficherEditForm2()" data-toggle="modal" data-target="#showEditModal">Editer</button>
-                        <button class="btn btn-warning" onclick="deleteDemande2()">Annuler</button>                        
+                        <button class="btn btn-warning" onclick="deleteDemande2()">Annuler</button>
                     </div>
                 </div>
                 </div>
@@ -164,7 +164,7 @@
                     </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">                            
+                        <div class="form-group">
                             <select name="newtype" id="newtype" class="form-control">
                                 <option disabled selected>Type de la demande</option>
                                 <option value="Conge">Congé</option>
@@ -182,7 +182,7 @@
                         <div class="form-group" id="divdatereprise" style="display:none">
                             <label for="newdatereprise">Date reprise</label>
                             <input type="date" name="newdatereprise" id="newdatereprise" class="form-control" required>
-                        </div> 
+                        </div>
                         <div class="form-group" id="divheuresortie" style="display:none">
                             <label for="newheuresortie">Heure sortie</label>
                             <input type="time" name="newheuresortie" id="newheuresortie" class="form-control">
@@ -204,7 +204,7 @@
                                 <option value="Sans solde">Sans solde</option>
                                 <option value="Annuel">Annuel</option>
                             </select>
-                        </div>                                               
+                        </div>
                     </div>
                     <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -225,8 +225,8 @@
                         </button>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group">                            
-                                <select name="edittype" id="edittype" class="form-control" disabled>                                    
+                            <div class="form-group">
+                                <select name="edittype" id="edittype" class="form-control" disabled>
                                     <option value="Conge">Congé</option>
                                     <option value="Sortie">Autorisation de sortie</option>
                                 </select>
@@ -242,7 +242,7 @@
                             <div class="form-group" id="diveditdatereprise" style="display:none">
                                 <label for="editdatereprise">Date reprise</label>
                                 <input type="date" name="editdatereprise" id="editdatereprise" class="form-control" required>
-                            </div> 
+                            </div>
                             <div class="form-group" id="diveditheuresortie" style="display:none">
                                 <label for="editheuresortie">Heure sortie</label>
                                 <input type="time" name="editheuresortie" id="editheuresortie" class="form-control">
@@ -282,341 +282,5 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-
-        //Coloriage du tableau
-        $('tr.Valide').addClass('table-success');
-        $('tr.Correction').addClass('table-warning');
-        $('tr.Refus').addClass('table-danger');
-        $('tr.Annulee').addClass('table-secondary');
-        $('tr.attente').addClass('table-primary');
-        $('a').css('color', 'black');
-
-        $('[data-toggle="tooltip"]').tooltip();
-
-        //****Personnaliser le formulaire d'ajout selon le type de la demande
-        $('select#newtype').change(function() {
-            //Si le type de la demande est une autorisation de sortie
-            if ($('#newtype').val() == 'Sortie') {
-                //afficher la date de sortie
-                $('#divdatedebut').show();
-                $('label[for=newdatedebut]').html('Date');
-
-                $('#divdatefin').hide();
-
-                //afficher l'heure de sortie
-                $('#divheuresortie').show();
-
-                //afficher la durée en heures
-                $('#divduree').show();
-                $('label[for=newduree]').html('Durée (en heures)');
-                $('input#newduree').attr('max', '6');
-
-                $('#divmotif').show();
-
-                $('#divdatereprise').hide();
-
-                $('#divheurereprise').show();
-            }
-            //Si le type de la demande est une autorisation de sortie
-            else if ($('#newtype').val() == 'Conge') {
-                $('#divdatedebut').show();
-                $('label[for=newdatedebut]').html('Date début');
-
-                $('#divdatefin').show();
-
-                //masquer l'heure de sortie
-                $('#divheuresortie').hide();
-
-                //afficher la durée en jours
-                $('#divduree').show();
-                $('label[for=newduree]').html('Durée (en jours)');
-
-                $('#divmotif').show();
-
-                $('#divdatereprise').show();
-
-                $('#divheurereprise').hide();
-            }
-        });
-
-        //****Personnaliser le formulaire d'edition selon le type de la demande
-        $('select#newtype').change(function() {
-            //Si le type de la demande est une autorisation de sortie
-            if ($('#newtype').val() == 'Sortie') {
-                //afficher la date de sortie
-                $('#divdatedebut').show();
-                $('label[for=newdatedebut]').html('Date');
-
-                $('#divdatefin').hide();
-
-                //afficher l'heure de sortie
-                $('#divheuresortie').show();
-
-                //afficher la durée en heures
-                $('#divduree').show();
-                $('label[for=newduree]').html('Durée (en heures)');
-                $('input#newduree').attr('max', '6');
-
-                $('#divmotif').show();
-
-                $('#divdatereprise').hide();
-
-                $('#divheurereprise').show();
-            }
-            //Si le type de la demande est une autorisation de sortie
-            else if ($('#newtype').val() == 'Conge') {
-                $('#divdatedebut').show();
-                $('label[for=newdatedebut]').html('Date début');
-
-                $('#divdatefin').show();
-
-                //afficher la durée en jours
-                $('#divduree').show();
-                $('label[for=newduree]').html('Durée (en jours)');
-
-                $('#divmotif').show();
-
-                $('#divdatereprise').show();
-
-                $('#divheurereprise').hide();
-            }
-        });        
-
-    });
-
-    /************** Afficher les détails d'un congé dans un modal ********************************/
-    function showdetails(id) {
-        var date_debut = type = etat = motif = datedebut = datefin = heuresortie = duree = datereprise = heurereprise = remarque = '';
-        $.getJSON('../employeeConge/' + id, function(data) {
-            date_debut = data.date_debut;
-            type = data.type;
-            etat = data.etat;
-            motif = data.motif;
-            datedebut = data.date_debut;
-            datefin = data.date_fin;
-            heuresortie = data.heure_sortie;
-            duree = data.duree;
-            datereprise = data.date_reprise;
-            heurereprise = data.heure_reprise;
-            remarque = data.remarque;
-        }).done(function() {
-            $('#modaltype').text(type);
-            $('#modaletat').text(etat);
-            $('#modalmotif').text(motif);
-            $('#modaldatedebut').text(datedebut);
-            $('#modaldatefin').text(datefin);
-            $('#modalheuresortie').text(heuresortie);
-            $('#modalduree').text(duree);
-            $('#modaldatereprise').text(datereprise);
-            $('#modalheurereprise').text(heurereprise);
-            $('#modalremarque').text(remarque);            
-            $('#modalid').text(id);
-            if((etat === 'Valide') || (etat === 'Refus')){
-                $('.modal-footer button').hide();
-            }
-        });
-    }
-    
-
-
-    /************** Ajouter une nouvelle demande de congé depuis le modal ****************/
-    function nouvelleDemandeConge() {
-        //tester sur le type pour récupérer le reste des données
-        var newtype = $('#newtype').val();
-
-        if (newtype === null) {
-            swal('Type demande obligatoire', 'Vous devez choisir un type', 'warning');
-        } else {
-            //Récupérer les données saisies par l'employé communes entre les deux types de demandes                
-            var newdatedebut = $('#newdatedebut').val();
-            var newduree = $('#newduree').val();
-            var newmotif = $('#newmotif').val();
-
-            if (newtype === 'Conge') {
-                var newdatefin = $('#newdatefin').val();
-                var newdatereprise = $('#newdatereprise').val();
-                var newheuresortie = "08:00";
-                var newheurereprise = "08:00";
-
-            } else if (newtype === 'Sortie') {
-                var newdatefin = newdatedebut;
-                var newdatereprise = newdatedebut;
-                var newheuresortie = $('#newheuresortie').val();
-                var newheurereprise = $('#newheurereprise').val();
-            }
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            })
-            $.ajax({
-                type: "POST",
-                url: "{{ route('employeeConge.store') }}",
-                data: "type=" + newtype + "&date_debut=" + newdatedebut + "&date_fin=" + newdatefin + "&heure_sortie=" + newheuresortie + "&duree=" + newduree + "&motif=" + newmotif + "&date_reprise=" + newdatereprise + "&heure_reprise=" + newheurereprise,
-                success: function() {
-                    swal('Demande congé ', 'ajoutée avec succés', 'success')
-                        .then(() => { location.reload(); });
-
-                },
-                error: function() {
-                    swal('Erreur', 'Merci de remplir tous les champs', 'error')
-                        .then(() => { location.reload(); });
-                }
-            })            
-        }
-    };
-    
-
-    /************** Annuler une demande de congé ****************/
-    function deleteDemande(id) {
-        swal({
-            title: "Etes-vous certain?",
-            text: "Une fois annulée, la demande ne peut plus être disponible pour édition!",
-            icon: "warning",
-            buttons: ["Annuler", "Confirmer"],
-            dangerMode: true,
-        })
-        .then((willCancel) => {
-            if (willCancel) {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                })
-                $.ajax({
-                    type: "PUT",
-                    url: "{{ route('employeeConge.cancel') }}",
-                    data: "id=" + id,
-                    success: function() {
-                        swal('Annulation ', 'Demande congé annulée avec succés', 'success')
-                            .then(() => { location.reload(); });
-
-                    },
-                    error: function() {
-                        swal('Erreur', 'Merci de réessayer plutard', 'error')
-                            .then(() => { location.reload(); });
-                    }
-                })
-            } else {
-                swal("La demande n'a pas été annulée");
-            }
-        });
-    }
-
-    function deleteDemande2(){
-        var id = $('#modalid').text();
-        deleteDemande(id);
-    }
-    
-
-    /************** Afficher le formulaire de modification d'un congé dans un modal ********************************/
-    function afficheEditForm(id) {
-        var date_debut = type = etat = motif = datedebut = datefin = heuresortie = duree = datereprise = heurereprise = remarque = '';
-        $.getJSON('../employeeConge/' + id, function(data) {
-            type = data.type;
-            etat = data.etat;
-            motif = data.motif;
-            datedebut = data.date_debut;
-            datefin = data.date_fin;
-            heuresortie = data.heure_sortie;
-            duree = data.duree;
-            datereprise = data.date_reprise;
-            heurereprise = data.heure_reprise;
-            remarque = data.remarque;
-        }).done(function() {
-            //Afficher les informations existante pour modification
-            $('#idDemandeEdition').text(id);
-            $("#edittype").val(type);
-            $("#editdatedebut").val(datedebut);
-            $("#editdatefin").val(datefin);
-            $("#editduree").val(duree);
-            $("#editmotif").val(motif);
-            $("#editheuresortie").val(heuresortie);
-            $("#editdatereprise").val(datereprise);
-            $("#editheurereprise").val(heurereprise);
-            $("#editremarque").val(remarque);
-
-            //afficher les informations communes entre les deux types de demandes: la date de début, duree et motif           
-            $("#diveditdatedebut").show();           
-            $("#diveditduree").show();          
-            $("#diveditmotif").show();
-            if (etat === "Correction") {
-                $("#diveditremarque").show();
-            } else {
-                $("#diveditremarque").hide();
-            }
-
-            //Afficher les informations spécifiques à chaque type de demande
-            if (type === "Conge") {
-                $("#diveditdatedebut label").text("Date début");
-                $("#diveditdatefin").show();
-                $("#diveditdatereprise").show();
-                $("#diveditheuresortie").hide();
-                $("#diveditheurereprise").hide();
-            } else if (type === "Sortie") {
-                $("#diveditdatedebut label").text("Date");
-                $("#diveditheuresortie").show();
-                $("#diveditheurereprise").show();
-                $("#diveditdatefin").hide();
-                $("#diveditdatereprise").hide();
-            }
-           
-        });
-    }
-
-    function afficherEditForm2(){
-        var id = $('#modalid').text();
-        afficheEditForm(id);
-    }
-    
-
-    /************** Enregistrer la modification d'un congé********************/
-    function updateDemandeConge() {
-        swal({
-            title: "Etes-vous certain?",
-            text: "Vous êtes sur le point de mettre à jour votre demande !",
-            icon: "warning",
-            buttons: ["Annuler", "Confirmer"],
-            // dangerMode: true,
-        })
-        .then((willCancel) => {
-            if (willCancel) {
-                var id = $('#idDemandeEdition').text();
-                var date_debut = $('#editdatedebut').val();
-                var date_fin = $('#editdatefin').val();
-                var duree = $('#editduree').val();
-                var motif = $('#editmotif').val();
-                var heure_sortie = $('#editheuresortie').val();
-                var date_reprise = $('#editdatereprise').val();
-                var heure_reprise = $('#editheurereprise').val();                
-                
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                })
-                $.ajax({
-                    type: "PUT",
-                    url: "../employeeConge/"+id,
-                    data: "date_debut="+date_debut+ "&date_fin="+date_fin+ "&duree="+duree+ "&motif="+motif+ "&heure_sortie="+heure_sortie+ "&date_reprise="+date_reprise+ "&heure_reprise="+heure_reprise,
-                    success: function() {
-                        swal('Mis à jour ', 'Demande mise à jour avec succées', 'success')
-                            .then(() => { location.reload(); });
-
-                    },
-                    error: function() {
-                        swal('Erreur', 'Merci de réessayer plutard', 'error')
-                            .then(() => { location.reload(); });
-                    }
-                })
-            } else {
-                swal("La demande n'a pas été annulée");
-            }
-        });
-    }
-    
-</script>
 @endsection
 

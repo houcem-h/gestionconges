@@ -44,6 +44,7 @@ Route::resource('employeeConge', 'EmployeeCongeController');
 Route::put('employeeCongeCancel', 'EmployeeCongeController@cancel')->name('employeeConge.cancel');
 
 Route::get('employeeCongeHistorique', 'EmployeeCongeController@historique')->name("employeeConge.historique");
+Route::get('congeHistorique/{id}', 'EmployeeCongeController@showFromHistory')->name("employeeConge.congeHistorique");
 
 
 /*
@@ -59,7 +60,7 @@ Route::get('equipeConge', 'EquipeCongeController@listerConges')->name('equipeCon
 Route::get('equipeSortie', 'EquipeCongeController@listerSorties')->name('equipeSortie.liste');
 /*
  */
-//lister des demandes du chef d'équipe 
+//lister des demandes du chef d'équipe
 Route::get('mesdemandes', 'EquipeCongeController@mesDemandes')->name('superviseur.mesdemandes');
 // Route::get('mademandedetails', 'EquipeCongeController@showMaDemandeDetails')->name('superviseur.mademandedetails');
 

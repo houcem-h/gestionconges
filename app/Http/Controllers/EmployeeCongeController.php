@@ -16,12 +16,12 @@ class EmployeeCongeController extends Controller
     public function index()
     {
         //Transférer les demandes échues vers l'historique
-        $demande = Conge::where('created_by', \Auth::user()->id)                        
-                        ->whereIn('etat',['Refus','Valide', 'Annulee'])
-                        ->get();
+        $demande = Conge::where('created_by', \Auth::user()->id)
+            ->whereIn('etat', ['Refus', 'Valide', 'Annulee'])
+            ->get();
         foreach ($demande as $value) {
             if ($value->type = "Conge") {
-                if ($value->date_reprise <= date("Y-m-d")){
+                if ($value->date_reprise <= date("Y-m-d")) {
                     $histo = new HistoriqueConge;
                     $histo->type = $value->type;
                     $histo->date_debut = $value->date_debut;
@@ -39,7 +39,7 @@ class EmployeeCongeController extends Controller
                     Conge::find($value->id)->delete();
                 }
             } else if ($value->type = "Sortie") {
-                if ($value->date_debut <= date("Y-m-d", strtotime("-3 days"))){
+                if ($value->date_debut <= date("Y-m-d", strtotime("-3 days"))) {
                     $histo = new HistoriqueConge;
                     $histo->type = $value->type;
                     $histo->date_debut = $value->date_debut;
@@ -57,12 +57,12 @@ class EmployeeCongeController extends Controller
                     Conge::find($value->id)->delete();
                 }
             }
-                        
+
         }
         //Lister le reste des demandes
         $conge = Conge::where([['created_by', \Auth::user()->id], ['type', 'Conge']])->get();
         $sortie = Conge::where([['created_by', \Auth::user()->id], ['type', 'Sortie']])->get();
-        return view('employee.home')->with(['conge'=> $conge, 'sortie'=>$sortie]);        
+        return view('employee.home')->with(['conge' => $conge, 'sortie' => $sortie]);
     }
 
     /**
@@ -72,7 +72,7 @@ class EmployeeCongeController extends Controller
      */
     public function create()
     {
-        
+
     }
 
     /**
@@ -119,7 +119,7 @@ class EmployeeCongeController extends Controller
      */
     public function edit($id)
     {
-        
+
     }
 
     /**
@@ -146,8 +146,8 @@ class EmployeeCongeController extends Controller
     }
 
     /**
-     * Cancel the specified resource in storage.
-     *     
+     * Cancel the specified resource in <storage class=""></storage>
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -161,27 +161,40 @@ class EmployeeCongeController extends Controller
     }
 
     /**
-     * Afficher l'hostorique des demande pour un employé queconque.
+     * Afficher l'historique des demande pour un employé queconque.
      *
      * @return \Illuminate\Http\Response
      */
     public function historique()
     {
         $histconge = HistoriqueConge::where([
-                ['created_by', \Auth::user()->id],
-                ['type', 'Conge']
-                ])
+            ['created_by', \Auth::user()->id],
+            ['type', 'Conge']
+        ])
             ->orderBy('date_debut', 'desc')
             ->paginate(10);
         $histsortie = HistoriqueConge::where([
-                ['created_by', \Auth::user()->id],
-                ['type', 'Sortie']
-                ])
+            ['created_by', \Auth::user()->id],
+            ['type', 'Sortie']
+        ])
             ->orderBy('date_debut', 'desc')
             ->paginate(10);
         return view('employee.historique')->with(['conge' => $histconge, 'sortie' => $histsortie]);
     }
-    
+
+    /**
+     * Display the specified resource from History.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showFromHistory($id)
+    {
+        $conge = HistoriqueConge::find($id);
+        // return view('employee.home')->with('conge', $conge);
+        return $conge;
+    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -191,6 +204,6 @@ class EmployeeCongeController extends Controller
      */
     public function destroy($id)
     {
-        
+
     }
 }

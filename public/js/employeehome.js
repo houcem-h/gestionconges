@@ -1,9 +1,11 @@
 $(document).ready(function() {
 
     //Coloriage du tableau
-    $('#Valide').addClass('table-success');
-    $('#Correction').addClass('table-warning');
-    $('#Refus').addClass('table-danger');
+    $('tr.Valide').addClass('table-success');
+    $('tr.Correction').addClass('table-warning');
+    $('tr.Refus').addClass('table-danger');
+    $('tr.Annulee').addClass('table-secondary');
+    $('tr.attente').addClass('table-primary');
     $('a').css('color', 'black');
 
     $('[data-toggle="tooltip"]').tooltip();
@@ -39,6 +41,9 @@ $(document).ready(function() {
 
             $('#divdatefin').show();
 
+            //masquer l'heure de sortie
+            $('#divheuresortie').hide();
+
             //afficher la durée en jours
             $('#divduree').show();
             $('label[for=newduree]').html('Durée (en jours)');
@@ -50,7 +55,6 @@ $(document).ready(function() {
             $('#divheurereprise').hide();
         }
     });
-    //****Fin de personnaliser le formulaire d'ajout selon le type de la demande
 
     //****Personnaliser le formulaire d'edition selon le type de la demande
     $('select#newtype').change(function() {
@@ -94,14 +98,17 @@ $(document).ready(function() {
             $('#divheurereprise').hide();
         }
     });
-    //****Fin de personnaliser le formulaire d'edition selon le type de la demande
 
 });
 
-/************** Afficher les détails d'un congé dans un modal ********************************/
+/** Display leave's details on modal
+ *
+ * @param {int} id
+ *
+ */
 function showdetails(id) {
     var date_debut = type = etat = motif = datedebut = datefin = heuresortie = duree = datereprise = heurereprise = remarque = '';
-    $.getJSON('../employeeConge/' + id, function(data) {
+    $.getJSON('../congeHistorique/' + id, function(data) {
         date_debut = data.date_debut;
         type = data.type;
         etat = data.etat;
@@ -124,21 +131,24 @@ function showdetails(id) {
         $('#modaldatereprise').text(datereprise);
         $('#modalheurereprise').text(heurereprise);
         $('#modalremarque').text(remarque);
+        $('#modalid').text(id);
+        if ((etat === 'Valide') || (etat === 'Refus')) {
+            $('.modal-footer button').hide();
+        }
     });
 }
-/************** Fin de afficher les détails d'un congé dans un modal ********************/
 
-
-/************** Ajouter une nouvelle demande de congé depuis le modal ****************/
+/**
+ * Add new leave request throw modal
+ */
 function nouvelleDemandeConge() {
-
     //tester sur le type pour récupérer le reste des données
     var newtype = $('#newtype').val();
 
     if (newtype === null) {
         swal('Type demande obligatoire', 'Vous devez choisir un type', 'warning');
     } else {
-        //Récupérer les données saisies par l'employé communes entre les deux types de demandes                
+        //Récupérer les données saisies par l'employé communes entre les deux types de demandes
         var newdatedebut = $('#newdatedebut').val();
         var newduree = $('#newduree').val();
         var newmotif = $('#newmotif').val();
@@ -162,29 +172,37 @@ function nouvelleDemandeConge() {
         })
         $.ajax({
             type: "POST",
-            url: "{{ route('employeeConge.store') }}",
+            // url: "{{ route('employeeConge.store') }}",
+            url: "../employeeConge/",
             data: "type=" + newtype + "&date_debut=" + newdatedebut + "&date_fin=" + newdatefin + "&heure_sortie=" + newheuresortie + "&duree=" + newduree + "&motif=" + newmotif + "&date_reprise=" + newdatereprise + "&heure_reprise=" + newheurereprise,
             success: function() {
                 swal('Demande congé ', 'ajoutée avec succés', 'success')
-                    .then(() => { location.reload(); });
+                    .then(() => {
+                        location.reload();
+                    });
 
             },
             error: function() {
                 swal('Erreur', 'Merci de remplir tous les champs', 'error')
-                    .then(() => { location.reload(); });
+                    .then(() => {
+                        location.reload();
+                    });
             }
         })
     }
 };
-/************** Fin de ajouter une nouvelle demande de congé depuis le modal ****************/
 
-/************** Début de annuler une demande de congé ****************/
+/**
+ * Cancel leave request
+ *
+ * @param {int} id
+ */
 function deleteDemande(id) {
     swal({
             title: "Etes-vous certain?",
             text: "Une fois annulée, la demande ne peut plus être disponible pour édition!",
             icon: "warning",
-            buttons: true,
+            buttons: ["Annuler", "Confirmer"],
             dangerMode: true,
         })
         .then((willCancel) => {
@@ -196,16 +214,21 @@ function deleteDemande(id) {
                 })
                 $.ajax({
                     type: "PUT",
-                    url: "{{ route('employeeConge.cancel') }}",
+                    // url: "{{ route('employeeConge.cancel') }}",
+                    url: "../employeeCongeCancel/",
                     data: "id=" + id,
                     success: function() {
                         swal('Annulation ', 'Demande congé annulée avec succés', 'success')
-                            .then(() => { location.reload(); });
+                            .then(() => {
+                                location.reload();
+                            });
 
                     },
                     error: function() {
                         swal('Erreur', 'Merci de réessayer plutard', 'error')
-                            .then(() => { location.reload(); });
+                            .then(() => {
+                                location.reload();
+                            });
                     }
                 })
             } else {
@@ -213,4 +236,129 @@ function deleteDemande(id) {
             }
         });
 }
-/************** Fin de annuler une demande de congé ****************/
+
+/**
+ * Add id to delete modal
+ */
+function deleteDemande2() {
+    var id = $('#modalid').text();
+    deleteDemande(id);
+}
+
+/**
+ * Display edit form in edit modal
+ *
+ * @param {int} id
+ */
+function afficheEditForm(id) {
+    var date_debut = type = etat = motif = datedebut = datefin = heuresortie = duree = datereprise = heurereprise = remarque = '';
+    $.getJSON('../employeeConge/' + id, function(data) {
+        type = data.type;
+        etat = data.etat;
+        motif = data.motif;
+        datedebut = data.date_debut;
+        datefin = data.date_fin;
+        heuresortie = data.heure_sortie;
+        duree = data.duree;
+        datereprise = data.date_reprise;
+        heurereprise = data.heure_reprise;
+        remarque = data.remarque;
+    }).done(function() {
+        //Afficher les informations existante pour modification
+        $('#idDemandeEdition').text(id);
+        $("#edittype").val(type);
+        $("#editdatedebut").val(datedebut);
+        $("#editdatefin").val(datefin);
+        $("#editduree").val(duree);
+        $("#editmotif").val(motif);
+        $("#editheuresortie").val(heuresortie);
+        $("#editdatereprise").val(datereprise);
+        $("#editheurereprise").val(heurereprise);
+        $("#editremarque").val(remarque);
+
+        //afficher les informations communes entre les deux types de demandes: la date de début, duree et motif
+        $("#diveditdatedebut").show();
+        $("#diveditduree").show();
+        $("#diveditmotif").show();
+        if (etat === "Correction") {
+            $("#diveditremarque").show();
+        } else {
+            $("#diveditremarque").hide();
+        }
+
+        //Afficher les informations spécifiques à chaque type de demande
+        if (type === "Conge") {
+            $("#diveditdatedebut label").text("Date début");
+            $("#diveditdatefin").show();
+            $("#diveditdatereprise").show();
+            $("#diveditheuresortie").hide();
+            $("#diveditheurereprise").hide();
+        } else if (type === "Sortie") {
+            $("#diveditdatedebut label").text("Date");
+            $("#diveditheuresortie").show();
+            $("#diveditheurereprise").show();
+            $("#diveditdatefin").hide();
+            $("#diveditdatereprise").hide();
+        }
+
+    });
+}
+
+/**
+ * Add id to display details modal
+ */
+function afficherEditForm2() {
+    var id = $('#modalid').text();
+    afficheEditForm(id);
+}
+
+/**
+ * Save edit data
+ */
+function updateDemandeConge() {
+    swal({
+            title: "Etes-vous certain?",
+            text: "Vous êtes sur le point de mettre à jour votre demande !",
+            icon: "warning",
+            buttons: ["Annuler", "Confirmer"],
+            // dangerMode: true,
+        })
+        .then((willCancel) => {
+            if (willCancel) {
+                var id = $('#idDemandeEdition').text();
+                var date_debut = $('#editdatedebut').val();
+                var date_fin = $('#editdatefin').val();
+                var duree = $('#editduree').val();
+                var motif = $('#editmotif').val();
+                var heure_sortie = $('#editheuresortie').val();
+                var date_reprise = $('#editdatereprise').val();
+                var heure_reprise = $('#editheurereprise').val();
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                })
+                $.ajax({
+                    type: "PUT",
+                    url: "../employeeConge/" + id,
+                    data: "date_debut=" + date_debut + "&date_fin=" + date_fin + "&duree=" + duree + "&motif=" + motif + "&heure_sortie=" + heure_sortie + "&date_reprise=" + date_reprise + "&heure_reprise=" + heure_reprise,
+                    success: function() {
+                        swal('Mis à jour ', 'Demande mise à jour avec succées', 'success')
+                            .then(() => {
+                                location.reload();
+                            });
+
+                    },
+                    error: function() {
+                        swal('Erreur', 'Merci de réessayer plutard', 'error')
+                            .then(() => {
+                                location.reload();
+                            });
+                    }
+                })
+            } else {
+                swal("La demande n'a pas été annulée");
+            }
+        });
+}
