@@ -1,4 +1,4 @@
-@extends('layouts.apprh')
+@extends('layouts.apprrh')
 @section('content')
 
     <div class="container">
@@ -12,12 +12,13 @@
                         <thead>
                         <tr>
                             <th>Employé</th>
+                            <th>Equipe</th>
                             <th>Solde</th>
                             <th>Date debut</th>
                             <th>Date fin</th>
                             <th>Motif</th>
                             <th>Etat</th>
-                            <th class="actions">Opérations</th>
+                            <th >Opérations</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -25,6 +26,7 @@
                                 @foreach ($conge as $item)
                                 <tr class="{{ $item->etat }}">
                                     <td>{{ $item->name }}</td>
+                                    <td>{{ $item->equipe }}</td>
                                     <td>{{ $item->soldeConge }}</td>
                                     <td>{{ $item->date_debut }}</td>
                                     <td>{{ $item->date_fin }}</td>
@@ -147,7 +149,7 @@
                         })
                         $.ajax({
                             type: "PUT",
-                            url: "{{ route('superviseur.validerdemande') }}",
+                            url: "{{ route('resprh.validerdemande') }}",
                             data: "id=" + id,
                             success: function() {
                                 swal('Validation ', 'Demande congé validée avec succés', 'success')
@@ -182,7 +184,7 @@
                         })
                         $.ajax({
                             type: "PUT",
-                            url: "{{ route('superviseur.refuserdemande') }}",
+                            url: "{{ route('resprh.refuserdemande') }}",
                             data: "id=" + id,
                             success: function() {
                                 swal('Refus ', 'Demande congé refusée avec succés', 'success')
@@ -268,7 +270,7 @@
                     })                
                     $.ajax({
                         type: "PUT",
-                        url: "{{ route('superviseur.editerdemande') }}",
+                        url: "{{ route('resprh.editerdemande') }}",
                         data: "id=" + id + "&remarque=" + remarque,
                         success: function() {
                             swal('Correction', 'Remarque de correction ajoutée avec succés', 'success')

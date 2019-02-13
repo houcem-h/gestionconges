@@ -39,11 +39,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
-    <link rel="stylesheet" href="https://bootadmin.net/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://bootadmin.net/css/fontawesome-all.min.css">
     <link rel="stylesheet" href="https://bootadmin.net/css/datatables.min.css">
-    <link rel="stylesheet" href="https://bootadmin.net/css/fullcalendar.min.css">
-    <link rel="stylesheet" href="https://bootadmin.net/css/bootadmin.min.css">
+ 
 
     <title>Dashboard | BootAdmin</title>
 </head>
@@ -55,8 +52,13 @@
 
         <div class="navbar-collapse collapse">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fa fa-envelope"></i> 5</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fa fa-bell"></i> 3</a></li>
+
+                <li class="nav-item active" style="display:none" id="liNbNewConges">
+                        <a class="nav-link" href="{{ route('resprh.demandeConge') }}"> New Congés <span class="badge badge-danger" id="nbNewConges"></span></a>
+                    </li>
+                    <li class="nav-item active" style="display:none" id="liNbNewSorties">
+                        <a class="nav-link" href="{{ route('resprh.demandeSortie') }}">New Sorties  <span class="badge badge-danger" id="nbNewSorties"></span></a>
+                    </li>
                 <li class="nav-item dropdown">
                     <a href="#" id="dd_user" class="nav-link dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>   {{ Auth::user()->name }}</a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dd_user">
@@ -87,10 +89,10 @@
                         </a>
                         <ul id="sm_base" class="list-unstyled collapse">
                                 <li>
-                                        <a href="{{ route('demandeConges.equipe') }}">Congés</a>
+                                        <a href="{{ route('resprh.demandeConge') }}">Congés</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('demandeSorties.equipe') }}">Sorties</a>
+                                            <a href="{{ route('resprh.demandeSortie') }}">Sorties</a>
                                         </li>
                            
                         </ul>
@@ -102,10 +104,10 @@
                         <ul id="sm_base1" class="list-unstyled collapse">
                                 <li>
                              
-                                        <a href="{{ route('historiqueConges.equipe') }}">Congés</a>
+                                        <a href="{{ route('resprh.historiqueconges') }}">Congés</a>
                                         </li>
                                         <li>
-                                            <a href="{{ route('superviseurSortie.liste') }}">Sorties</a>
+                                            <a href="{{ route('resprh.historiquesorties') }}">Sorties</a>
                                         </li>
                            
                         </ul>
@@ -134,8 +136,55 @@
 
     
 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118868344-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-118868344-1');
+    </script>
+    
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-4097235499795154",
+        enable_page_level_ads: true
+      });
+    </script>
+   <script> $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    </script>
+   
+   <script type="text/javascript">
+    $(document).ready(function() {
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').toggleClass('active');
+        });
 
-  
+        $.ajax({
+            type: "GET",
+            url: "{{ route('resprh.nbnewconge') }}",                
+            success: function(data, status){
+                if (data > 0) {
+                    $('#nbNewConges').text(data);
+                    $('#liNbNewConges').show().addClass('animated swing');
+                }                    
+            },                
+        });
 
+        $.ajax({
+            type: "GET",
+            url: "{{ route('resprh.nbnewsortie') }}",                
+            success: function(data, status){
+                if (data > 0) {
+                    $('#nbNewSorties').text(data);
+                    $('#liNbNewSorties').show().addClass('animated swing');   
+                }                    
+            },                
+        });
+    });
+</script>
 </body>
 </html>

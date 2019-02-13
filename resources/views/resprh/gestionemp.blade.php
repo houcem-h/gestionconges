@@ -1,15 +1,24 @@
-@extends('layouts.apprh')
+@extends('layouts.apprrh')
 @section('content')
 
     <div class="container">
-            <h2 >Liste des employees</h2>
-            <div class="card mb-4">
+            <a href="#">
+                    <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addnewleaveModal"><i class="fas fa-user-plus"></i>&nbsp;Ajouter un employee</button>
+                </a>
+                <br><br>
+            <div class="card">
+                  
                 <div class="card-body">
-                        <a href="#">
-                                <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addnewleaveModal"><i class="fas fa-user-plus"></i>&nbsp;Ajouter un employee</button>
-                            </a>
-                            <br><br>
+                       
+                    
                     <table id="example" class="table table-hover" cellspacing="0" width="100%">
+                            <div class="row">
+                                    <div class="col-12">
+                                       <h2>Liste des employees</h2>
+                                      <br>
+                                    </div>
+                                  
+                                </div>      
                         <thead>
                         <tr>
                             <th>ID</th>
@@ -32,19 +41,19 @@
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->role }}</td>
                                 <td>{{ $item->matricule }}</td>
-                                <td>{{ $item->equipe }}</td>
+                                <td>{{ $item->nom_equipe }}</td>
                                 <td>{{ $item->soldeConge }}</td>
 
                             <td>
-                                <a href="#" class="btn btn-icon btn-pill btn-primary"  onclick="afficheEditForm({{ $item->id }})" data-toggle="tooltip" title="Edit"><i class="fas fa-user-edit" data-toggle="modal" data-target="#showEditModal"></i></a>
-                                <a href="#" class="btn btn-icon btn-pill btn-danger" onclick="deleteDemande({{ $item->id }})" data-toggle="tooltip" title="Delete"><i class="fas fa-user-minus"></i></a>
+                                <a href="#" class="btn btn-icon btn-pill btn-primary"  onclick="afficheEditForm({{ $item->id }})" data-toggle="tooltip" title="Modifier"><i class="fas fa-user-edit" data-toggle="modal" data-target="#showEditModal"></i></a>
+                                <a href="#" class="btn btn-icon btn-pill btn-danger" onclick="DeleteEmployee({{ $item->id }})" data-toggle="tooltip" title="Supprimer"><i class="fas fa-user-minus"></i></a>
                             </td>
                         </tr>
                         @endforeach
                      
                         </tbody>
                     </table>
-                    <div class="text-center">
+                    <div class="text-center" class="pagination pagination-sm">
                             {{ $users->links() }}
                         </div>
                 </div>
@@ -97,7 +106,7 @@
                         </div>
                         <div class="form-group">
                             <label for="newpassword">Password</label>
-                            <input type="text" name="newpassword" id="newpassword" class="form-control">
+                            <input type="text" name="newpassword" value="12345" id="newpassword" class="form-control">
                         </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -131,7 +140,6 @@
             <div class="form-group" >
                     <label for="editrole">Role</label>
                     <select name="editrole" id="editrole" class="form-control">
-                            <option disabled >Role de l'employee</option>
                             <option value="0">Employee</option>
                             <option value="1">Superviseur</option>
                         </select>                   
@@ -152,7 +160,7 @@
 
         <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-        <button type="button" class="btn btn-primary" onclick="updateEmployee()">Enregistrer</button>
+        <button type="button" class="btn btn-primary" onclick="modifierEmploye()">Enregistrer</button>
         </div>
     </div>
     </div>
@@ -172,7 +180,7 @@ function nouveauEmployee(){
             var newrole = $('#newrole').val();
             var newsoldeConge = $('#newsoldeConge').val();
             var newequipe = $('#newequipe').val();
-            var newpassword="12345";
+            var newpassword=$('#newpassword').val();;
 
             $.ajaxSetup({
                 headers: {
@@ -221,7 +229,7 @@ function nouveauEmployee(){
     </script>
     <script>
     
-    function updateEmployee() {
+    function modifierEmploye() {
         swal({
             title: "Etes-vous certain?",
             text: "Vous êtes sur le point de mettre à jour l employee !",
@@ -266,7 +274,7 @@ function nouveauEmployee(){
     
     
     
-    function deleteDemande(id) {
+    function deleteEmployee(id) {
         swal({
             title: "Etes-vous certain?",
             text: "Une fois annulée, la demande ne peut plus être disponible pour édition!",
@@ -283,10 +291,10 @@ function nouveauEmployee(){
                 })
                 $.ajax({
                     type: "POST",
-                    url: "",
+                    url: ,
                     data: "id=" + id,
                     success: function() {
-                        swal('Annulation ', 'Demande congé annulée avec succés', 'success')
+                        swal('Annulation ', 'Employee supprimé avec succés', 'success')
                             .then(() => { location.reload(); });
 
                     },
