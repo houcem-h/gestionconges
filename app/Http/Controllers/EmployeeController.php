@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Equipe;
+
 use BD;
 
 class EmployeeController extends Controller
@@ -16,8 +17,12 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $users= User::orderBy('created_at','desc')->paginate(10);
-        return view('resprh.gestionemp')->with('users',$users);
+        /*$users= User::orderBy('created_at','desc')->paginate(10);
+        return view('resprh.gestionemp')->with('users',$users);*/
+          //lister les demandes congés en historique
+          $users = User::join('equipes', 'equipes.id', '=', 'users.equipe')
+          ->select('equipes.*', 'users.*')->paginate(10);
+          return view('resprh.gestionemp')->with('users',$users);
     }
 
     /**
@@ -100,7 +105,10 @@ class EmployeeController extends Controller
         
        
     }
-
+    public function deleteEmployee(id $id){
+        $user = User::find ($id)->delete();
+        return "supprimer";
+      }
     /**
      * Remove the specified resource from storage.
      *
@@ -110,8 +118,7 @@ class EmployeeController extends Controller
     public function destroy($id)
 
     { 
-        $user =User::find($request->id);
-        $user->delete();
-        return "annulée avec succès";
+       
     }
+
       }

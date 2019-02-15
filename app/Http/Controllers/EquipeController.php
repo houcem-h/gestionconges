@@ -18,16 +18,17 @@ class EquipeController extends Controller
         $equipes= Equipe::orderBy('created_at','desc')->paginate(10);
         return view('resprh.gestionequi')->with('equipes',$equipes);
     }
-    public function liste_equipesConges()
+   /* public function liste_equipes()
     {
-        $equipes= Equipe::orderBy('nom_equipe','desc')->paginate(10);
-        return view('resprh.demandeconges')->with('equipes',$equipes);
+        $equipes= Equipe::orderBy('nom_equipe','desc');
+        return view('resprh.gestionemp')->with('equipes',$equipes);
     }
     
-       public function liste_equipesSorties()
+    /*   public function liste_equipesSorties()
        {
            $equipes= Equipe::orderBy('nom_equipe','desc')->paginate(10);
-          return view('resprh.demandesorties')->with('equipes',$equipes);}
+          return view('')->with('equipes',$equipes);}
+          */
 
     /**
      * Show the form for creating a new resource.

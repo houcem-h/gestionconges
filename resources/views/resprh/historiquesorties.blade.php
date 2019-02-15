@@ -1,31 +1,36 @@
 @extends('layouts.apprrh')
 @section('content')
-<div class="container">
-    <h2 >Historiques demandes congés 
-    </h2>
-               <div class="card mb-4">
-                     <div class="card-body">
-                      @if(count($conge) > 0)
+
+    <div class="container">
+            <h2 >Historiques des autorisations des sorties
+
+                </h2>
+            <div class="card mb-4">
+                <div class="card-body">
+                        @if(count($sortie) > 0)
 
                     <table id="example" class="table table-hover" cellspacing="0" width="100%">
-                      <thead>
-                  <tr>
-                          <th>Employé</th>
-                          <th>Equipe</th>
-                          <th>Solde</th>
-                          <th>Date debut</th>
-                          <th>Date fin</th>
-                          <th>Motif</th>
-                          <th>Etat</th>
-                            </thead>
+                        <thead>
+                        <tr>
+                            <th>Employé</th>
+                            <th>Equipe</th>
+                            <th>Solde</th>
+                            <th>Heure Sortie</th>
+                            <th>Heure Reprise</th>
+                            <th>Motif</th>
+                            <th>Etat</th>
+                            <th>Opérations</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                             <tbody>                                
-                                @foreach ($conge as $item)
+                                @foreach ($sortie as $item)
                                     <tr class="{{ $item->etat }}">
                                         <td>{{ $item->name }}</td>
                                         <td>{{ $item->nom_equipe }}</td>
-                                        <td>{{ $item->soldeConge }}</td>
                                         <td>{{ $item->date_debut }}</td>
-                                        <td>{{ $item->date_fin }}</td>
+                                        <td>{{ $item->heure_sortie }}</td>
+                                        <td>{{ $item->heure_reprise }}</td>
                                         <td>{{ $item->motif }}</td>
                                         <td>{{ $item->etat }}</td>
                                         <td>
@@ -38,7 +43,7 @@
                             </tbody>
                         </table>
                         <div class="text-center">
-                            {{ $conge->links() }}
+                            {{ $sortie->links() }}
                         </div>
                     @else
                         Vous n'avez aucun historique.
@@ -46,8 +51,8 @@
                 </div>
             </div>
 
-            <!-- ************************** Modal pour afficher les détais d'un congé ************************** -->
-            <div class="modal fade" id="showDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+             <!-- ************************** Modal pour afficher les détais d'un congé ************************** -->
+             <div class="modal fade" id="showDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -63,7 +68,7 @@
                         Date reprise : <b><span id="modaldatereprise"></span></b><br>
                         Motif : <b><span id="modalmotif"></span></b><br>
                         Remarque : <textarea name="modalremarque" id="modalremarque" class="form-control" cols="33" rows="3" disabled></textarea>
-                        <span id="idDemande" style="display:none"></span>
+                        <div id="idDemande" style="display:none"></div>
                     </div>
                     <div class="modal-footer">
                         <a name="" id="" class="btn btn-success" href="#" onclick="validerDemande2()" role="button">Valider</a>
@@ -77,47 +82,48 @@
     </div>
 </div>
 <script>
+
     $(document).ready(function() {
-        $('[data-toggle="tooltip"]').tooltip();
+       $('[data-toggle="tooltip"]').tooltip();
 
-        //Coloriage du tableau
-        $('tr.Valide').addClass('table-success');
-        $('tr.Correction').addClass('table-info');
-        $('tr.Refus').addClass('table-danger');
-    });    
+       //Coloriage du tableau
+       $('tr.Valide').addClass('table-success');
+       $('tr.Correction').addClass('table-info');
+       $('tr.Refus').addClass('table-danger');
+   });   
+   
+   
+   function showdetails(id) {
+       var date_debut = type = etat = motif = datedebut = datefin = heuresortie = duree = datereprise = heurereprise = remarque = '';
+       $.get('./detailsDemandeEquipe/'+id, function(data) {
+           name = data[0].name;
+           soldeconge = data[0].soldeConge;
+           motif = data[0].motif;
+           datedebut = data[0].date_debut;
+           datefin = data[0].date_fin;
+           datereprise = data[0].date_reprise;
+           duree = data[0].duree;
+           remarque = data[0].remarque;
+           etat = data[0].etat;
 
-    function showdetails(id) {
-        var date_debut = type = etat = motif = datedebut = datefin = heuresortie = duree = datereprise = heurereprise = remarque = '';
-        $.get('./detailsDemande/'+id, function(data) {
-            name = data[0].name;
-            soldeconge = data[0].soldeConge;
-            motif = data[0].motif;
-            datedebut = data[0].date_debut;
-            datefin = data[0].date_fin;
-            datereprise = data[0].date_reprise;
-            duree = data[0].duree;
-            remarque = data[0].remarque;
-            etat = data[0].etat;            
-
-        }).done(function() {            
-            
-            $('#modalname').text(name);
-            $('#modalsoldeconge').text(soldeconge);
-            $('#modalmotif').text(motif);
-            $('#modaldatedebut').text(datedebut);
-            $('#modaldatefin').text(datefin);
-            $('#modaldatereprise').text(datereprise);
-            $('#modalduree').text(duree);
-            $('#modalremarque').text(remarque);
-            $('#idDemande').text(id);
-
-            if ((etat === 'Valide') || (etat === 'Refus')) {
-                $('.modal-footer a').hide();
-            }
-            
-        });        
-        
-    }
+       }).done(function() {            
+           
+           $('#modalname').text(name);
+           $('#modalsoldeconge').text(soldeconge);
+           $('#modalmotif').text(motif);
+           $('#modaldatedebut').text(datedebut);
+           $('#modaldatefin').text(datefin);
+           $('#modaldatereprise').text(datereprise);
+           $('#modalduree').text(duree);
+           $('#modalremarque').text(remarque);
+           $('#idDemande').text(id);
+           
+           if ((etat === 'Valide') || (etat === 'Refus')) {
+               $('.modal-footer a').hide();
+           }
+       });        
+       
+   }
 
 </script>
 @endsection

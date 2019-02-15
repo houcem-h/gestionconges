@@ -1,14 +1,15 @@
-@extends('layouts.apprh')
+@extends('layouts.apprrh')
 @section('content')
 
     <div class="container">
-            <h2 >Liste des equipes</h2>
+            <a href="#">
+                    <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addnewleaveModal"><i class="fas fa-plus"></i>&nbsp;Ajouter une equipe</button>
+                </a>
+                <br><br>
             <div class="card mb-4">
                 <div class="card-body">
-                        <a href="#">
-                                <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addnewleaveModal"><i class="fas fa-plus"></i>&nbsp;Ajouter une equipe</button>
-                            </a>
-                            <br><br>
+                        <h4 >Liste des equipes</h4>
+
                     <table id="example" class="table table-hover" cellspacing="0" width="100%">
                         <thead>
                         <tr>
@@ -27,8 +28,8 @@
                                 
 
                             <td>
-                                <a href="#" class="btn btn-icon btn-pill btn-primary"  onclick="afficheEditForm({{ $item->id }})" data-toggle="tooltip" title="Edit"><i class="fas fa-edit" data-toggle="modal" data-target="#showEditModal"></i></a>
-                                <a href="#" class="btn btn-icon btn-pill btn-danger" onclick="deleteDemande({{ $item->id }})" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></a>
+                                <a href="#" class="btn btn-icon btn-pill btn-primary"  onclick="afficheEditForm({{ $item->id }})" data-toggle="tooltip" title="Supprimer"><i class="fas fa-edit" data-toggle="modal" data-target="#showEditModal"></i></a>
+                                <a href="#" class="btn btn-icon btn-pill btn-danger" onclick="deleteDemande({{ $item->id }})" data-toggle="tooltip" title="Modifier"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         @endforeach
