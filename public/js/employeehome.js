@@ -10,6 +10,28 @@ $(document).ready(function() {
 
     $('[data-toggle="tooltip"]').tooltip();
 
+    // let today = new Date();
+    // let dd = today.getDate();
+    // let mm = today.getMonth() + 1;
+    // let yyyy = today.getFullYear();
+    // today = yyyy + "-" + mm + "-" + dd;
+
+    //fix minimum end date after choosing starting date
+    $('#newdatedebut').change(function() {
+        $('#newdatefin').prop('min', (this.value));
+    })
+
+    //fix minimum upturn date after choosing ending date
+    $('#newdatefin').change(function() {
+        $('#newdatereprise').prop('min', (this.value));
+    })
+
+    //calculate number of days
+    $('#newduree').focus(function() {
+        this.value = ((Date.parse($('#newdatefin')[0].value) - Date.parse($('#newdatedebut')[0].value)) / (1000 * 60 * 60 * 24)) + 1;
+    })
+
+
     //****Personnaliser le formulaire d'ajout selon le type de la demande
     $('select#newtype').change(function() {
         //Si le type de la demande est une autorisation de sortie
@@ -108,7 +130,7 @@ $(document).ready(function() {
  */
 function showdetails(id) {
     var date_debut = type = etat = motif = datedebut = datefin = heuresortie = duree = datereprise = heurereprise = remarque = '';
-    $.getJSON('../congeHistorique/' + id, function(data) {
+    $.getJSON('../employeeConge/' + id, function(data) {
         date_debut = data.date_debut;
         type = data.type;
         etat = data.etat;
@@ -361,4 +383,41 @@ function updateDemandeConge() {
                 swal("La demande n'a pas été annulée");
             }
         });
+}
+
+/** Display leave's details from history on modal
+ *
+ * @param {int} id
+ *
+ */
+function showdetailsHistorique(id) {
+    var date_debut = type = etat = motif = datedebut = datefin = heuresortie = duree = datereprise = heurereprise = remarque = '';
+    $.getJSON('../congeHistorique/' + id, function(data) {
+        date_debut = data.date_debut;
+        type = data.type;
+        etat = data.etat;
+        motif = data.motif;
+        datedebut = data.date_debut;
+        datefin = data.date_fin;
+        heuresortie = data.heure_sortie;
+        duree = data.duree;
+        datereprise = data.date_reprise;
+        heurereprise = data.heure_reprise;
+        remarque = data.remarque;
+    }).done(function() {
+        $('#modaltype').text(type);
+        $('#modaletat').text(etat);
+        $('#modalmotif').text(motif);
+        $('#modaldatedebut').text(datedebut);
+        $('#modaldatefin').text(datefin);
+        $('#modalheuresortie').text(heuresortie);
+        $('#modalduree').text(duree);
+        $('#modaldatereprise').text(datereprise);
+        $('#modalheurereprise').text(heurereprise);
+        $('#modalremarque').text(remarque);
+        $('#modalid').text(id);
+        if ((etat === 'Valide') || (etat === 'Refus')) {
+            $('.modal-footer button').hide();
+        }
+    });
 }

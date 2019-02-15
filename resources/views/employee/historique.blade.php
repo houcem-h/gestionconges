@@ -50,7 +50,7 @@
                                                 <td>{{ $item->motif }}</td>
                                                 <td>{{ $item->etat }}</td>
                                                 <td>
-                                                    <a href="#" onclick="showdetails({{ $item->id }})" data-toggle="tooltip" title="Détails">
+                                                    <a href="#" onclick="showdetailsHistorique({{ $item->id }})" data-toggle="tooltip" title="Détails">
                                                         <i class="fas fa-info-circle" data-toggle="modal" data-target="#showDetailsModal"></i>
                                                     </a>
                                                 </td>

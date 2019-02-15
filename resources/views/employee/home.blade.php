@@ -185,11 +185,11 @@
                         </div>
                         <div class="form-group" id="divheuresortie" style="display:none">
                             <label for="newheuresortie">Heure sortie</label>
-                            <input type="time" name="newheuresortie" id="newheuresortie" class="form-control">
+                            <input type="time" name="newheuresortie" id="newheuresortie" class="form-control" min="8:00" max="18:00">
                         </div>
                         <div class="form-group" id="divheurereprise" style="display:none">
                             <label for="newheurereprise">Heure reprise</label>
-                            <input type="time" name="newheurereprise" id="newheurereprise" class="form-control">
+                            <input type="time" name="newheurereprise" id="newheurereprise" class="form-control" min="8:00" max="18:00">
                         </div>
                         <div class="form-group" id="divduree" style="display:none">
                             <label for="newduree">Durée</label>
