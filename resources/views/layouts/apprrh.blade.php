@@ -80,10 +80,10 @@
                         </a>
                         <ul id="sm_base" class="list-unstyled collapse">
                             <li>
-                                <a href="{{ route('demandeConges.equipe') }}">Congés</a>
+                                <a href="{{ route('resprh.demandeConge') }}">Congés</a>
                             </li>
                             <li>
-                                <a href="{{ route('demandeSorties.equipe') }}">Sorties</a>
+                                <a href="{{ route('resprh.demandeSortie') }}">Sorties</a>
                             </li>
 
                         </ul>
